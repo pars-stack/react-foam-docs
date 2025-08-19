@@ -4,13 +4,13 @@ import React from 'react'
 
 const CodeExampleSection = () => {
   return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                       Simple Yet Powerful
                   </h2>
-                  <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                  <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                       See how easy it is to create and use stores with React Foam.
                   </p>
               </div>
@@ -27,8 +27,8 @@ const CodeExampleSection = () => {
                           </CardDescription>
                       </CardHeader>
                       <CardContent>
-                          <div className="bg-gray-900 rounded-lg p-4 text-sm">
-                              <pre className="text-gray-100">
+                          <div className="bg-background-accent rounded-lg p-4 text-sm">
+                              <pre className="text-foreground">
                                   {`import { createStore } from 'react-foam';
 
 interface CounterState {
@@ -56,8 +56,8 @@ const useCounterStore = createStore<CounterState>({
                           </CardDescription>
                       </CardHeader>
                       <CardContent>
-                          <div className="bg-gray-900 rounded-lg p-4 text-sm">
-                              <pre className="text-gray-100">
+                          <div className="bg-background-accent rounded-lg p-4 text-sm">
+                              <pre className="text-foreground">
                                   {`function Counter() {
   const { count, step } = useCounterStore();
   

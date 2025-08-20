@@ -59,7 +59,7 @@
   /* Pure white */
   --background-variant: hsl(210 20% 98%);
   /* Slightly tinted light gray */
-  --background-accent: hsl(210 20% 95%);
+  --background-accent: hsl(220, 4%, 83%);
   /* Accent background */
 
   --foreground: hsl(210 10% 10%);
@@ -160,8 +160,12 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground scroll-smooth;
   }
 }
 

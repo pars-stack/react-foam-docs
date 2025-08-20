@@ -5,7 +5,7 @@ import HeroSection from "@/components/template/home/hero-section";
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col">
       <HeroSection />
       <FeaturedSection />
       <CodeExampleSection />

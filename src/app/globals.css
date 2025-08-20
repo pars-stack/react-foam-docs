@@ -164,3 +164,42 @@
     @apply bg-background text-foreground;
   }
 }
+
+.pretty-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, .55) transparent;
+}
+
+.pretty-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.pretty-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pretty-scrollbar::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  background-color: rgba(120, 120, 120, .55);
+  border-radius: 999px;
+}
+
+.pretty-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(160, 160, 160, .75);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pretty-scrollbar {
+    scrollbar-color: rgba(180, 180, 180, .3) transparent;
+  }
+
+  .pretty-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(180, 180, 180, .3);
+  }
+
+  .pretty-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(220, 220, 220, .5);
+  }
+}

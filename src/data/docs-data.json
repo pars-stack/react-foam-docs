@@ -1,0 +1,189 @@
+[
+    {
+        "id": "installation",
+        "title": "Installation",
+        "content": [
+            {
+                "type": "snippet",
+                "language": "bash",
+                "code": "# npm\nnpm install react-foam\n\n# yarn\nyarn add react-foam\n\n# pnpm\npnpm add react-foam"
+            },
+            {
+                "type": "description",
+                "text": "React Foam requires React 18+ for <code>useSyncExternalStore</code> support."
+            }
+        ]
+    },
+    {
+        "id": "quick-start",
+        "title": "Quick Start",
+        "content": [
+            {
+                "type": "description",
+                "text": "Here's a simple counter example to get you started:"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "import { createStore } from 'react-foam';\n\n// Create a store with initial state\nconst useCounterStore = createStore({ count: 0 });\n\nfunction Counter() {\n  const count = useCounterStore(state => state.count);\n\n  const increment = () => {\n    useCounterStore.setState(state => ({ count: state.count + 1 }));\n  };\n\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={increment}>Increment</button>\n    </div>\n  );\n}"
+            },
+            {
+                "type": "description",
+                "text": "That's it! No providers, no reducers, no actions. Just create a store and use it."
+            }
+        ]
+    },
+    {
+        "id": "core-concepts",
+        "title": "Core Concepts",
+        "content": [
+            {
+                "type": "description",
+                "text": "### Stores\n\nA store in React Foam is created using the <code>createStore</code> function. Each store is completely independent and manages its own state:"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "interface UserState {\n  name: string;\n  email: string;\n  isLoggedIn: boolean;\n}\n\nconst useUserStore = createStore<UserState>({\n  name: '',\n  email: '',\n  isLoggedIn: false\n});"
+            },
+            {
+                "type": "description",
+                "text": "### State Updates\n\nState updates are performed using the <code>setState</code> method, which accepts either a new state object or an updater function:"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "// Direct state update\nuseUserStore.setState({\n  name: 'John Doe',\n  email: 'john@example.com',\n  isLoggedIn: true\n});\n\n// Functional update (recommended for complex updates)\nuseUserStore.setState(state => ({\n  ...state,\n  name: 'Jane Doe'\n}));"
+            },
+            {
+                "type": "description",
+                "text": "### Selective Subscriptions\n\nComponents can subscribe to specific parts of the state using selectors, ensuring minimal re-renders:"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "function UserName() {\n  // Only re-renders when name changes\n  const name = useUserStore(state => state.name);\n  \n  return <span>{name}</span>;\n}"
+            },
+            {
+                "type": "description",
+                "text": "### Optimizing Derived State with <code>memo</code>\n\nWhen a selector creates a new object or array (e.g., using <code>.filter()</code> or by returning <code>{...}</code>), it can cause unnecessary re-renders. React Foam provides a <code>memo</code> utility to solve this problem elegantly."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "import { createStore, memo } from 'react-foam';\n\nconst useUserStore = createStore({ user: { name: 'Alex', age: 30 }, lastLogin: Date.now() });\n\nfunction UserCard() {\n  // Without memo, this component would re-render when lastLogin changes.\n  // With memo, it only re-renders when user.name changes.\n  const { name } = useUserStore(\n    memo(state => ({ name: state.user.name }))\n  );\n\n  return <div>{name}</div>\n}"
+            }
+        ]
+    },
+    {
+        "id": "api-reference",
+        "title": "API Reference",
+        "content": [
+            {
+                "type": "description",
+                "text": "### <code>createStore<T>(initialState: T): StoreHook<T></code>\n\nCreates a new store with the given initial state.\n\n**Parameters:**\n\n  - <code>initialState</code>: The initial state of the store\n\n**Returns:** A hook function with attached methods\n\n**Example:**"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const useMyStore = createStore({ value: 0, text: 'hello' });"
+            },
+            {
+                "type": "description",
+                "text": "### Store Hook Usage\n\nThe returned hook can be used in several ways:\n\n#### <code>useStore(): T</code>\n\nReturns the entire state and subscribes to all changes."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const state = useMyStore();\nconsole.log(state.value, state.text);"
+            },
+            {
+                "type": "description",
+                "text": "#### <code>useStore<R>(selector: (state: T) => R): R</code>\n\nReturns a selected part of the state and only re-renders when that part changes."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const value = useMyStore(state => state.value);\nconst text = useMyStore(state => state.text);"
+            },
+            {
+                "type": "description",
+                "text": "### Store Methods\n\n#### <code>getState(): T</code>\n\nReturns the current state without subscribing to changes. Useful for accessing state outside of React components."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const currentState = useMyStore.getState();\nconsole.log('Current value:', currentState.value);"
+            },
+            {
+                "type": "description",
+                "text": "#### <code>setState(updater: StateUpdater<T> | T): void</code>\n\nUpdates the store state. Accepts either a new state object or an updater function."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "// Direct update\nuseMyStore.setState({ value: 10, text: 'world' });\n\n// Functional update\nuseMyStore.setState(state => ({ ...state, value: state.value + 1 }));"
+            },
+            {
+                "type": "description",
+                "text": "### Utility Functions\n\n#### <code>memo<T, R>(selector: (state: T) => R): (state: T) => R</code>\n\nCreates a memoized selector that automatically tracks property access and caches the result. This is the recommended way to select derived data (new objects or arrays) to prevent unnecessary re-renders."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const getActiveUsers = memo(state => state.users.filter(u => u.isActive));\nconst activeUsers = useUserStore(getActiveUsers);"
+            },
+            {
+                "type": "description",
+                "text": "#### <code>computed<T, R>(store: StoreHook<T>, selector: (state: T) => R): () => R</code>\n\nCreates a non-reactive function that computes a value from a store's state."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "const getDoubledValue = computed(useMyStore, state => state.value * 2);\n\nfunction Component() {\n  const doubled = getDoubledValue();\n  return <div>{doubled}</div>;\n}"
+            }
+        ]
+    },
+    {
+        "id": "examples",
+        "title": "Examples",
+        "content": [
+            {
+                "type": "description",
+                "text": "### Memoizing Derived State\n\nHere is an example showing how to use <code>memo</code> to prevent re-renders when displaying a filtered list."
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "import { createStore, memo } from 'react-foam';\n\nconst useProductsStore = createStore({\n  products: [\n    { id: 1, name: 'Laptop', inStock: true },\n    { id: 2, name: 'Mouse', inStock: false },\n    { id: 3, name: 'Keyboard', inStock: true },\n  ],\n  lastUpdated: Date.now()\n});\n\nfunction InStockProducts() {\n  console.log('InStockProducts rendered!');\n  \n  // This selector filters the array, creating a new array.\n  // `memo` ensures we only get a new result if `products` changes.\n  const inStock = useProductsStore(\n    memo(state => state.products.filter(p => p.inStock))\n  );\n\n  return (\n    <ul>\n      {inStock.map(product => <li key={product.id}>{product.name}</li>)}\n    </ul>\n  );\n}\n\nfunction App() {\n  const updateTimestamp = () => {\n    // This updates an unrelated part of the state.\n    // The InStockProducts component will NOT re-render thanks to `memo`.\n    useProductsStore.setState(state => ({...state, lastUpdated: Date.now()}));\n  };\n\n  return (\n    <div>\n      <InStockProducts />\n      <button onClick={updateTimestamp}>Update Timestamp</button>\n    </div>\n  )\n}"
+            },
+            {
+                "type": "description",
+                "text": "### Basic Counter"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "import { createStore } from 'react-foam';\n\ninterface CounterState {\n  count: number;\n  step: number;\n}\n\nconst useCounterStore = createStore<CounterState>({\n  count: 0,\n  step: 1\n});\n\nfunction Counter() {\n  const { count, step } = useCounterStore();\n\n  const increment = () => {\n    useCounterStore.setState(state => ({\n      ...state,\n      count: state.count + state.step\n    }));\n  };\n\n  const setStep = (newStep: number) => {\n    useCounterStore.setState(state => ({ ...state, step: newStep }));\n  };\n\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <input \n        type=\"number\" \n        value={step} \n        onChange={(e) => setStep(Number(e.target.value))} \n      />\n      <button onClick={increment}>+{step}</button>\n    </div>\n  );\n}"
+            },
+            {
+                "type": "description",
+                "text": "### Multiple Stores"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "// User store\nconst useUserStore = createStore({\n  name: '',\n  isLoggedIn: false\n});\n\n// Theme store\nconst useThemeStore = createStore({\n  theme: 'light' as 'light' | 'dark',\n});\n\n// Shopping cart store\nconst useCartStore = createStore({\n  items: [] as string[],\n});\n\nfunction App() {\n  const user = useUserStore();\n  const { theme } = useThemeStore();\n  const cartItemCount = useCartStore(state => state.items.length);\n\n  return (\n    <div className={`app ${theme}`}>\n      <header>\n        Welcome, {user.name || 'Guest'} \n        ({cartItemCount} items in cart)\n      </header>\n      {/* Rest of your app */}\n    </div>\n  );\n}"
+            },
+            {
+                "type": "description",
+                "text": "### Advanced Todo List"
+            },
+            {
+                "type": "snippet",
+                "language": "typescript",
+                "code": "import { createStore, memo } from 'react-foam';\n\ninterface Todo {\n  id: string;\n  text: string;\n  completed: boolean;\n}\n\ninterface TodoState {\n  todos: Todo[];\n  filter: 'all' | 'active' | 'completed';\n}\n\nconst useTodoStore = createStore<TodoState>({\n  todos: [],\n  filter: 'all',\n});\n\n// Actions can be grouped for organization\nconst todoActions = {\n  addTodo: (text: string) => {\n    const newTodo: Todo = { id: Date.now().toString(), text, completed: false };\n    useTodoStore.setState(state => ({ ...state, todos: [...state.todos, newTodo] }));\n  },\n  toggleTodo: (id: string) => {\n    useTodoStore.setState(state => ({\n      ...state,\n      todos: state.todos.map(todo =>\n        todo.id === id ? { ...todo, completed: !todo.completed } : todo\n      )\n    }));\n  },\n  setFilter: (filter: TodoState['filter']) => {\n    useTodoStore.setState(state => ({ ...state, filter }));\n  }\n};\n\nfunction TodoApp() {\n  // Select primitive values directly\n  const filter = useTodoStore(state => state.filter);\n  \n  // Use `memo` for derived arrays\n  const filteredTodos = useTodoStore(memo(state => {\n    switch (state.filter) {\n      case 'active':\n        return state.todos.filter(todo => !todo.completed);\n      case 'completed':\n        return state.todos.filter(todo => todo.completed);\n      default:\n        return state.todos;\n    }\n  }));\n\n  return (\n    <div>\n      {/* UI for adding todos and setting filters */}\n      <ul>\n        {filteredTodos.map(todo => (\n          <li key={todo.id} onClick={() => todoActions.toggleTodo(todo.id)}>\n            {todo.text}\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n}"
+            }
+        ]
+    }
+]

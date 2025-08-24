@@ -31,7 +31,7 @@ export function CodeBlock({
   return (
     <div className="rounded-2xl border border-neutral-200/70 dark:border-neutral-800/70 shadow-sm overflow-hidden bg-white/60 dark:bg-neutral-900/60 backdrop-blur">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-neutral-100/70 dark:bg-neutral-800/60">
+      <div className="flex h-10 items-center justify-between px-4 py-2 bg-neutral-100/70 dark:bg-neutral-800/60">
         <div className="flex items-center gap-2 text-sm">
           <span className="inline-flex size-2.5 rounded-full bg-rose-500" />
           <span className="inline-flex size-2.5 rounded-full bg-amber-500" />
@@ -40,7 +40,7 @@ export function CodeBlock({
             {title ?? language}
           </span>
         </div>
-        <CopyButton text={code} />
+        <CopyButton text={code} className="size-8" />
       </div>
 
       {/* Code */}

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { ChevronRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import docsData from "@/data/docs-data.json"
+import docsData from "@/data/docs-data.json";
 import DocSection from "@/components/template/docs/doc-section";
 
 export default function DocsPage() {
@@ -24,8 +25,11 @@ export default function DocsPage() {
     );
 
     docsData.forEach((section) => {
-      const el = document.getElementById(section.id);
-      if (el) observer.observe(el);
+      // observe each subsection (h3) instead of just section
+      section.sections.forEach((sub: any) => {
+        const el = document.getElementById(sub.id);
+        if (el) observer.observe(el);
+      });
     });
 
     return () => observer.disconnect();
@@ -49,22 +53,42 @@ export default function DocsPage() {
             </Button>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-4">
             {docsData.map((section) => (
-              <a
-                key={section.id}
-                href={`#${section.id}`}
-                onClick={() => setMobileOpen(false)}
-                className={clsx(
-                  "flex items-center px-3 py-2 rounded-lg transition-all text-sm",
-                  activeId === section.id
-                    ? "bg-sidebar-primary/10 text-sidebar-primary font-medium border-l-4 border-sidebar-primary"
-                    : "hover:bg-sidebar-accent/10 text-sidebar-foreground"
-                )}
-              >
-                <ChevronRight className="w-4 h-4 mr-2" />
-                {section.title}
-              </a>
+              <div key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  onClick={() => setMobileOpen(false)}
+                  className={clsx(
+                    "flex items-center px-3 py-2 rounded-lg transition-all text-sm font-semibold",
+                    activeId === section.id
+                      ? "bg-sidebar-primary/10 text-sidebar-primary border-l-4 border-sidebar-primary"
+                      : "hover:bg-sidebar-accent/10 text-sidebar-foreground"
+                  )}
+                >
+                  <ChevronRight className="w-4 h-4 mr-2" />
+                  {section.title}
+                </a>
+
+                {/* Subsections */}
+                <div className="ml-6 mt-1 space-y-1">
+                  {section.sections.map((sub: any) => (
+                    <a
+                      key={sub.id}
+                      href={`#${sub.id}`}
+                      onClick={() => setMobileOpen(false)}
+                      className={clsx(
+                        "block px-3 py-1 rounded-md text-sm transition-all",
+                        activeId === sub.id
+                          ? "bg-sidebar-primary/10 text-sidebar-primary font-medium"
+                          : "hover:bg-sidebar-accent/10 text-sidebar-foreground"
+                      )}
+                    >
+                      {sub.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
         </aside>
@@ -76,7 +100,7 @@ export default function DocsPage() {
               key={i}
               id={section.id}
               title={section.title}
-              content={section.content}
+              sections={section.sections} // ✅ updated
             />
           ))}
         </main>
@@ -85,7 +109,12 @@ export default function DocsPage() {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 w-full bg-background border-b border-border px-4 py-3 flex justify-between items-center z-50">
         <h1 className="text-xl font-bold">Docs</h1>
-        <Button variant="outline" size="sm" onClick={() => setMobileOpen(true)} className="border-border">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setMobileOpen(true)}
+          className="border-border"
+        >
           <Menu className="w-5 h-5" />
         </Button>
       </div>
